@@ -1,5 +1,6 @@
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
 import { useState, useEffect } from "react";
 import moment from "moment";
 
@@ -26,106 +27,112 @@ const Calendar = () => {
     fetchData();
   }, []);
 
+  const format = (date) => {
+    return moment(date).format("dddd, MMMM Do, h:mm a");
+  };
+
   const TableRow = ({ title, result, prediction }) => {
     return (
       <>
         <tr>
-          <td>
-            <p>Pole position</p>
-          </td>
-          <td>
-            <p>{result}</p>
-          </td>
-          <td>
-            <p>{prediction}</p>
-          </td>
+          <td className="pe-5 small fw-light">{title}</td>
+          <td className="pe-5 small fw-light">{result}</td>
+          <td className="pe-5 small fw-light">{prediction}</td>
         </tr>
       </>
+    );
+  };
+
+  const ResultsTable = ({ race }) => {
+    return (
+      <table className="mt-2">
+        <tbody>
+          <tr>
+            <td className="pe-5"></td>
+            <td className="pe-5 small fw-bold">Result</td>
+            <td className="pe-5 small fw-bold">Prediction</td>
+          </tr>
+          <TableRow
+            title="Pole position"
+            result={race.pole_position}
+            prediction={race.prediction?.pole_position}
+          />
+          <TableRow
+            title="Sprint first"
+            result={race.sprint_race_pos_1}
+            prediction={race.prediction?.sprint_race_pos_1}
+          />
+          <TableRow
+            title="Sprint second"
+            result={race.sprint_race_pos_2}
+            prediction={race.prediction?.sprint_race_pos_2}
+          />
+          <TableRow
+            title="Sprint third"
+            result={race.sprint_race_pos_3}
+            prediction={race.prediction?.sprint_race_pos_3}
+          />
+          <TableRow
+            title="Sprint fastest lap"
+            result={race.sprint_fastest_lap}
+            prediction={race.prediction?.sprint_fastest_lap}
+          />
+          <TableRow
+            title="Race first"
+            result={race.race_pos_1}
+            prediction={race.prediction?.race_pos_1}
+          />
+          <TableRow
+            title="Race first"
+            result={race.race_pos_2}
+            prediction={race.prediction?.race_pos_2}
+          />
+          <TableRow
+            title="Race first"
+            result={race.race_pos_3}
+            prediction={race.prediction?.race_pos_3}
+          />
+          <TableRow
+            title="Race fastest lap"
+            result={race.race_fastest_lap}
+            prediction={race.prediction?.race_fastest_lap}
+          />
+        </tbody>
+      </table>
     );
   };
 
   const CalendarItem = ({ race }) => {
     return (
       <>
-        <Card>
+        <Card className="my-2">
           <Card.Body>
             <Card.Title>{race.location}</Card.Title>
-            <Card.Text>
-              <span className="fw-light">
-                <small>
+            <Card.Body className="py-0 px-0 mx-0 my-0">
+              <Row>
+                <span className="fw-light small">
                   Qualifying on{" "}
-                  {moment(race.qualifying_start_time).format(
-                    "dddd, MMMM Do, h:mm a"
-                  )}
-                </small>
-              </span>
-              <br></br>
-              <span>
-                Sprint race on{" "}
-                {moment(race.sprint_race_start_time).format(
-                  "dddd, MMMM Do, h:mm a"
-                )}
-              </span>
-              <br></br>
-              <span>
-                Race on{" "}
-                {moment(race.race_start_time).format("dddd, MMMM Do, h:mm a")}
-              </span>
-              <table>
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td>Result</td>
-                    <td>Prediction</td>
-                  </tr>
-                  <TableRow
-                    title="Pole position"
-                    result={race.pole_position}
-                    prediction={race.prediction?.pole_position}
-                  />
-                  <TableRow
-                    title="Sprint first"
-                    result={race.sprint_race_pos_1}
-                    prediction={race.prediction?.sprint_race_pos_1}
-                  />
-                  <TableRow
-                    title="Sprint second"
-                    result={race.sprint_race_pos_2}
-                    prediction={race.prediction?.sprint_race_pos_2}
-                  />
-                  <TableRow
-                    title="Sprint third"
-                    result={race.sprint_race_pos_3}
-                    prediction={race.prediction?.sprint_race_pos_3}
-                  />
-                  <TableRow
-                    title="Sprint fastest lap"
-                    result={race.sprint_fastest_lap}
-                    prediction={race.prediction?.sprint_fastest_lap}
-                  />
-                  <TableRow
-                    title="Race first"
-                    result={race.race_pos_1}
-                    prediction={race.prediction?.race_pos_1}
-                  />
-                  <TableRow
-                    title="Race first"
-                    result={race.race_pos_2}
-                    prediction={race.prediction?.race_pos_2}
-                  />
-                  <TableRow
-                    title="Race first"
-                    result={race.race_pos_3}
-                    prediction={race.prediction?.race_pos_3}
-                  />
-                  <TableRow
-                    title="Race fastest lap"
-                    result={race.race_fastest_lap}
-                    prediction={race.prediction?.race_fastest_lap}
-                  />
-                </tbody>
-              </table>
-            </Card.Text>
+                  {format(race.qualifying_start_time)}
+                </span>
+              </Row>
+              <Row>
+                <span className="fw-light small">
+                  Sprint race on{" "}
+                  {format(race.sprint_race_start_time)}
+                </span>
+              </Row>
+              <Row>
+                <span className="fw-light small">
+                  Race on{" "}
+                  {format(race.race_start_time)}
+                </span>
+              </Row>
+              {new Date(race.qualifying_start_time) < Date.now() ? (
+                <ResultsTable race={race} />
+              ) : (
+                <></>
+              )}
+            </Card.Body>
           </Card.Body>
         </Card>
       </>
@@ -135,9 +142,8 @@ const Calendar = () => {
   return (
     <>
       <Container>
-        <h1>Calendar</h1>
-        {races.map((race) => {
-          return <CalendarItem key={race.id} race={race} />;
+        {races.map((race, index) => {
+          return <CalendarItem key={index} race={race} />;
         })}
       </Container>
     </>

@@ -5,12 +5,18 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
 import Card from "react-bootstrap/Card";
+import Row from "react-bootstrap/Row";
+import Toast from "react-bootstrap/Toast";
+import ToastContainer from "react-bootstrap/ToastContainer";
+import moment from "moment";
 
 const Predict = () => {
   const [posting, setPosting] = useState(false);
   const [currentRace, setCurrentRace] = useState({});
   const [riders, setRiders] = useState([]);
   const [prediction, setPrediction] = useState({});
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
 
   const { data: session } = useSession();
 
@@ -62,28 +68,10 @@ const Predict = () => {
     fetchData();
   }, []);
 
-  const onClick = async () => {
-    // setRaces([]);
-    // const races = await (await fetch("/api/races")).json();
-    // setRaces(races);
-    // console.log(races);
-
-    // setRiders([]);
-    // const riders = await (await fetch("/api/riders")).json();
-    // setRiders(riders);
-
-    // await fetch("/api/predictions?user=1234&race=4567");
-    // await fetch("/api/users");
-    // await fetch("/api/users/1234");
-
-    await fetch("/api/predictions?user=1&race=1");
-    await fetch("/api/predictions?user=1");
-    await fetch("/api/predictions?");
-    await fetch("/api/predictions");
-  };
-
   const postPrediction = async (event, id) => {
     setPosting(true);
+    setShowSuccessToast(false);
+    setShowErrorToast(false);
     event.preventDefault();
 
     const target = event.target;
@@ -111,23 +99,77 @@ const Predict = () => {
       race_fastest_lap: race_fastest_lap,
     });
 
-    fetch("/api/predictions", {
+    const response = await fetch("/api/predictions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: data,
     });
+
+    if (response.status != 200) {
+      setShowErrorToast(true);
+    } else {
+      setShowSuccessToast(true);
+    }
+
     setPosting(false);
+  };
+
+  const format = (date) => {
+    return moment(date).format("dddd, MMMM Do, h:mm a");
+  };
+
+  const SuccessToast = () => {
+    return (
+      <ToastContainer position="bottom-center" className="py-5 text-center">
+        <Toast
+          show={showSuccessToast}
+          delay={3000}
+          bg="success"
+          onClose={() => setShowSuccessToast(false)}
+          autohide
+        >
+          <Toast.Header closeButton={false}>Success!</Toast.Header>
+          <Toast.Body className="text-white">
+            Your predictions have been posted. Good luck!
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
+    );
+  };
+
+  const ErrorToast = () => {
+    return (
+      <ToastContainer position="bottom-center" className="py-5 text-center">
+        <Toast
+          show={showErrorToast}
+          delay={3000}
+          bg="danger"
+          onClose={() => setShowErrorToast(false)}
+          autohide
+        >
+          <Toast.Header closeButton={false}>Error</Toast.Header>
+          <Toast.Body className="text-white">
+            Please try to post your predictions again.
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
+    );
   };
 
   const RiderSelection = ({ id, selectedRider, disabled = false }) => {
     return (
-      <Form.Select id={id} defaultValue={selectedRider} disabled={disabled}>
+      <Form.Select
+        id={id}
+        defaultValue={selectedRider}
+        disabled={disabled}
+        className="fw-light"
+      >
         <option key="empty" value=""></option>
-        {riders.map((rider) => {
+        {riders.map((rider, index) => {
           return (
-            <option key={rider.id} value={rider.name}>
+            <option key={index} value={rider.name}>
               {rider.name}
             </option>
           );
@@ -139,18 +181,15 @@ const Predict = () => {
   const TableRow = ({ title, id, selectedRider, disabled = false, result }) => {
     return (
       <tr>
-        <td>{title}</td>
-        <td></td>
-        <td>
+        <td className="pe-5">{title}</td>
+        <td className="pe-5">
           <RiderSelection
             id={id}
             selectedRider={selectedRider}
             disabled={disabled}
           />
         </td>
-        <td>
-          <p>{result}</p>
-        </td>
+        <td>{result}</td>
       </tr>
     );
   };
@@ -158,17 +197,33 @@ const Predict = () => {
   return (
     <>
       <Container>
-        <h1>Welcome {session?.user.name}</h1>
-        <p>Enter your predictions for the upcoming race below</p>
+        <Row className="text-center">
+          <h1>Welcome {session?.user.name}</h1>
+          <p>Enter your predictions for the upcoming race below</p>
+        </Row>
 
-        <Card>
-          <Card.Body>
-            <p>{currentRace.location}</p>
-            <p>Predict Pole by {currentRace.qualifying_start_time}</p>
-            <p>Predict Sprint Race by {currentRace.sprint_race_start_time}</p>
-            <p>Predict Race by {currentRace.race_start_time}</p>
-            <Form onSubmit={(event) => postPrediction(event, 1)}>
-              <table>
+        <Form onSubmit={(event) => postPrediction(event, 1)}>
+          <Card>
+            <Card.Body>
+              <Card.Title>{currentRace.location}</Card.Title>
+              <Row className="small">
+                <span>
+                  Predict Pole by {format(currentRace.qualifying_start_time)}
+                </span>
+              </Row>
+              <Row className="small">
+                <span>
+                  Predict Sprint Race by{" "}
+                  {format(currentRace.sprint_race_start_time)}
+                </span>
+              </Row>
+              <Row className="small">
+                <span>
+                  Predict Race by {format(currentRace.race_start_time)}
+                </span>
+              </Row>
+
+              <table className="my-3">
                 <tbody>
                   <TableRow
                     title="Pole"
@@ -235,40 +290,29 @@ const Predict = () => {
                   />
                 </tbody>
               </table>
+              <span className="fw-light" style={{ "font-size": 12 }}>
+                <em>
+                  *Note: You can predict as many times as you like until the cut
+                  off time listed above
+                </em>
+              </span>
+            </Card.Body>
+          </Card>
+          <div className="mt-3 text-center">
+            {!posting ? (
+              <>
+                <Button variant="primary" type="submit">
+                  Post Results
+                </Button>
+              </>
+            ) : (
+              <Spinner animation="grow" variant="primary" />
+            )}
+          </div>
+        </Form>
 
-              {!posting ? (
-                <>
-                  <Button variant="primary" type="submit">
-                    Post Results
-                  </Button>
-                </>
-              ) : (
-                <Spinner animation="grow" variant="primary" />
-              )}
-            </Form>
-          </Card.Body>
-        </Card>
-
-        {/* <button onClick={onClick}>Click</button> */}
-        {/* <p>{races.length} total races this season</p>
-        {races.map((race) => {
-          return (
-            <>
-              <p>{race.location}</p>
-              <p>{race.qualifying_start_time}</p>
-              <p>{race.sprint_race_start_time}</p>
-              <p>{race.race_start_time}</p>
-            </>
-          );
-        })}
-        <p>{riders.length} total riders this season</p>
-        {riders.map((rider) => {
-          return (
-            <>
-              <p>{rider.name}</p>
-            </>
-          );
-        })} */}
+        <ErrorToast />
+        <SuccessToast />
       </Container>
     </>
   );
