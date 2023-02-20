@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     .order("race_start_time", { ascending: true });
 
   if (!error) {
-    console.log(JSON.stringify(races));
     res.status(200).json(races);
     return;
   }

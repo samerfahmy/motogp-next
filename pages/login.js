@@ -12,13 +12,13 @@ const LoginPage = () => {
   const [loggingIn, setLoggingIn] = useState(false);
   const router = useRouter();
   const callbackUrl = router.query?.callbackUrl ?? "/";
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (event) => {
     setLoggingIn(true);
-    e.preventDefault();
+    event.preventDefault();
 
-    const _target = e.target;
-    const email = _target.email.value;
-    const password = _target.password.value;
+    const target = event.target;
+    const email = target.email.value;
+    const password = target.password.value;
     const result = await signIn("credentials", {
       email,
       password,

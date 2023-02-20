@@ -8,7 +8,6 @@ export default async function handler(req, res) {
     .order("name", { ascending: true });
 
   if (!error) {
-    console.log(JSON.stringify(riders));
     res.status(200).json(riders);
     return;
   }
