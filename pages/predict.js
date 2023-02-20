@@ -173,65 +173,65 @@ const Predict = () => {
                   <TableRow
                     title="Pole"
                     id="pole_position"
-                    selectedRider={prediction.pole_position}
-                    disabled={checkExpired(currentRace.qualifying_start_time)}
-                    result={currentRace.pole_position}
+                    selectedRider={prediction?.pole_position}
+                    disabled={checkExpired(currentRace?.qualifying_start_time)}
+                    result={currentRace?.pole_position}
                   />
                   <TableRow
                     title="Sprint first"
                     id="sprint_race_pos_1"
-                    selectedRider={prediction.sprint_race_pos_1}
-                    disabled={checkExpired(currentRace.sprint_race_start_time)}
-                    result={currentRace.sprint_race_pos_1}
+                    selectedRider={prediction?.sprint_race_pos_1}
+                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
+                    result={currentRace?.sprint_race_pos_1}
                   />
                   <TableRow
                     title="Sprint second"
                     id="sprint_race_pos_2"
-                    selectedRider={prediction.sprint_race_pos_2}
-                    disabled={checkExpired(currentRace.sprint_race_start_time)}
-                    result={currentRace.sprint_race_pos_2}
+                    selectedRider={prediction?.sprint_race_pos_2}
+                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
+                    result={currentRace?.sprint_race_pos_2}
                   />
                   <TableRow
                     title="Sprint third"
                     id="sprint_race_pos_3"
-                    selectedRider={prediction.sprint_race_pos_3}
-                    disabled={checkExpired(currentRace.sprint_race_start_time)}
-                    result={currentRace.sprint_race_pos_3}
+                    selectedRider={prediction?.sprint_race_pos_3}
+                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
+                    result={currentRace?.sprint_race_pos_3}
                   />
                   <TableRow
                     title="Sprint fastest lap"
                     id="sprint_race_fastest_lap"
-                    selectedRider={prediction.sprint_race_fastest_lap}
-                    disabled={checkExpired(currentRace.sprint_race_start_time)}
-                    result={currentRace.sprint_race_fastest_lap}
+                    selectedRider={prediction?.sprint_race_fastest_lap}
+                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
+                    result={currentRace?.sprint_race_fastest_lap}
                   />
                   <TableRow
                     title="Race first"
                     id="race_pos_1"
-                    selectedRider={prediction.race_pos_1}
-                    disabled={checkExpired(currentRace.race_start_time)}
-                    result={currentRace.race_pos_1}
+                    selectedRider={prediction?.race_pos_1}
+                    disabled={checkExpired(currentRace?.race_start_time)}
+                    result={currentRace?.race_pos_1}
                   />
                   <TableRow
                     title="Race second"
                     id="race_pos_2"
-                    selectedRider={prediction.race_pos_2}
-                    disabled={checkExpired(currentRace.race_start_time)}
-                    result={currentRace.race_pos_2}
+                    selectedRider={prediction?.race_pos_2}
+                    disabled={checkExpired(currentRace?.race_start_time)}
+                    result={currentRace?.race_pos_2}
                   />
                   <TableRow
                     title="Race third"
                     id="race_pos_3"
-                    selectedRider={prediction.race_pos_3}
-                    disabled={checkExpired(currentRace.race_start_time)}
-                    result={currentRace.race_pos_3}
+                    selectedRider={prediction?.race_pos_3}
+                    disabled={checkExpired(currentRace?.race_start_time)}
+                    result={currentRace?.race_pos_3}
                   />
                   <TableRow
                     title="Race fastest lap"
                     id="race_fastest_lap"
-                    selectedRider={prediction.race_fastest_lap}
-                    disabled={checkExpired(currentRace.race_start_time)}
-                    result={currentRace.race_fastest_lap}
+                    selectedRider={prediction?.race_fastest_lap}
+                    disabled={checkExpired(currentRace?.race_start_time)}
+                    result={currentRace?.race_fastest_lap}
                   />
                 </tbody>
               </table>

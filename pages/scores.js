@@ -34,24 +34,24 @@ const Scores = () => {
             <tr>
               <th></th>
               {scores.user_ids.map((user_id) => {
-                return <th>{scores.user_data[user_id].name}</th>;
+                return <th key="">{scores.user_data[user_id].name}</th>;
               })}
             </tr>
             <tr>
               <th>Total</th>
               {scores.user_ids.map((user_id) => {
-                return <th>{scores.user_data[user_id].total}</th>;
+                return <th key="">{scores.user_data[user_id].total}</th>;
               })}
             </tr>
           </thead>
           <tbody>
             {scores.races.map((race) => {
               return (
-                <tr>
+                <tr key="">
                   <td>{race.location}</td>
                   {scores.user_ids.map((user_id) => {
                     return (
-                      <td>
+                      <td key="">
                         {scores.user_data[user_id].races[race.race_id]
                           ? scores.user_data[user_id].races[race.race_id].score
                           : "0"}

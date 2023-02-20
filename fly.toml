@@ -11,6 +11,7 @@ processes = []
 
 [env]
   PORT = "8080"
+  NEXTAUTH_URL = "https://motogp-next.fly.dev/"
 
 [experimental]
   auto_rollback = true
