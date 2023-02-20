@@ -35,28 +35,29 @@ export default function Admin() {
 
     const target = event.target;
 
-    const pole_position = target.pole_position.value;
-    const sprint_race_pos_1 = target.sprint_race_pos_1.value;
-    const sprint_race_pos_2 = target.sprint_race_pos_2.value;
-    const sprint_race_pos_3 = target.sprint_race_pos_3.value;
-    const sprint_race_fastest_lap = target.sprint_race_fastest_lap.value;
-    const race_pos_1 = target.race_pos_1.value;
-    const race_pos_2 = target.race_pos_2.value;
-    const race_pos_3 = target.race_pos_3.value;
-    const race_fastest_lap = target.race_fastest_lap.value;
-
-    const data = JSON.stringify({
+    let raceResult = {
       race_id: id,
-      pole_position: pole_position,
-      sprint_race_pos_1: sprint_race_pos_1,
-      sprint_race_pos_2: sprint_race_pos_2,
-      sprint_race_pos_3: sprint_race_pos_3,
-      sprint_race_fastest_lap: sprint_race_fastest_lap,
-      race_pos_1: race_pos_1,
-      race_pos_2: race_pos_2,
-      race_pos_3: race_pos_3,
-      race_fastest_lap: race_fastest_lap,
-    });
+      pole_position: target.pole_position.value,
+      sprint_race_pos_1: target.sprint_race_pos_1.value,
+      sprint_race_pos_2: target.sprint_race_pos_2.value,
+      sprint_race_pos_3: target.sprint_race_pos_3.value,
+      sprint_race_fastest_lap: target.sprint_race_fastest_lap.value,
+      race_pos_1: target.race_pos_1.value,
+      race_pos_2: target.race_pos_2.value,
+      race_pos_3: target.race_pos_3.value,
+      race_fastest_lap: target.race_fastest_lap.value,
+    };
+
+    for (var i = 0; i < races.length; i++) {
+      if (races[i].id == raceResult.race_id) {
+        raceResult.location = races[i].location;
+        races[i] = raceResult;
+        setRaces(races);
+        break;
+      }
+    }
+
+    const data = JSON.stringify(raceResult);
 
     const response = await fetch("/api/races/results", {
       method: "POST",
@@ -199,15 +200,15 @@ export default function Admin() {
                 </table>
 
                 <div className="my-3">
-                {!posting ? (
-                  <>
-                    <Button variant="primary" type="submit">
-                      Post Results
-                    </Button>
-                  </>
-                ) : (
-                  <Spinner animation="grow" variant="primary" />
-                )}
+                  {!posting ? (
+                    <>
+                      <Button variant="primary" type="submit">
+                        Post Results
+                      </Button>
+                    </>
+                  ) : (
+                    <Spinner animation="grow" variant="primary" />
+                  )}
                 </div>
               </Form>
             </Accordion.Body>

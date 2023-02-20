@@ -76,28 +76,22 @@ const Predict = () => {
 
     const target = event.target;
 
-    const pole_position = target.pole_position.value;
-    const sprint_race_pos_1 = target.sprint_race_pos_1.value;
-    const sprint_race_pos_2 = target.sprint_race_pos_2.value;
-    const sprint_race_pos_3 = target.sprint_race_pos_3.value;
-    const sprint_race_fastest_lap = target.sprint_race_fastest_lap.value;
-    const race_pos_1 = target.race_pos_1.value;
-    const race_pos_2 = target.race_pos_2.value;
-    const race_pos_3 = target.race_pos_3.value;
-    const race_fastest_lap = target.race_fastest_lap.value;
-
-    const data = JSON.stringify({
+    let postedPrediction = {
       race_id: id,
-      pole_position: pole_position,
-      sprint_race_pos_1: sprint_race_pos_1,
-      sprint_race_pos_2: sprint_race_pos_2,
-      sprint_race_pos_3: sprint_race_pos_3,
-      sprint_race_fastest_lap: sprint_race_fastest_lap,
-      race_pos_1: race_pos_1,
-      race_pos_2: race_pos_2,
-      race_pos_3: race_pos_3,
-      race_fastest_lap: race_fastest_lap,
-    });
+      pole_position: target.pole_position.value,
+      sprint_race_pos_1: target.sprint_race_pos_1.value,
+      sprint_race_pos_2: target.sprint_race_pos_2.value,
+      sprint_race_pos_3: target.sprint_race_pos_3.value,
+      sprint_race_fastest_lap: target.sprint_race_fastest_lap.value,
+      race_pos_1: target.race_pos_1.value,
+      race_pos_2: target.race_pos_2.value,
+      race_pos_3: target.race_pos_3.value,
+      race_fastest_lap: target.race_fastest_lap.value,
+    };
+
+    setPrediction(postedPrediction);
+
+    const data = JSON.stringify(postedPrediction);
 
     const response = await fetch("/api/predictions", {
       method: "POST",
@@ -169,7 +163,7 @@ const Predict = () => {
         <option key="empty" value=""></option>
         {riders.map((rider, index) => {
           return (
-            <option key={index} value={rider.name}>
+            <option key={rider.id} value={rider.name}>
               {rider.name}
             </option>
           );
@@ -197,9 +191,11 @@ const Predict = () => {
   return (
     <>
       <Container>
-        <Row className="text-center">
-          <h1>Welcome {session?.user.name}</h1>
-          <p>Enter your predictions for the upcoming race below</p>
+        <Row className="text-center my-3">
+          <h4>Welcome {session?.user.name}</h4>
+          <p className="small fw-light">
+            Enter your predictions for the upcoming race below
+          </p>
         </Row>
 
         <Form onSubmit={(event) => postPrediction(event, 1)}>
