@@ -17,8 +17,8 @@ const LoginPage = () => {
     event.preventDefault();
 
     const target = event.target;
-    const email = target.email.value;
-    const password = target.password.value;
+    const email = target.email.value.toLowerCase();
+    const password = target.password.value.toLowerCase();
     const result = await signIn("credentials", {
       email,
       password,
@@ -45,7 +45,7 @@ const LoginPage = () => {
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email address</Form.Label>
             <Form.Control
-              type="text"
+              type="email"
               placeholder="Enter email"
               disabled={loggingIn}
             />

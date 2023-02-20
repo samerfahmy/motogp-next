@@ -2,15 +2,39 @@
 import { supabase } from "./../../../lib/supabaseClient";
 import { getToken } from "next-auth/jwt";
 
+const sanitize = (string) => {
+  if (string != null) {
+    string = string.trim();
+    if (string.length == 0) {
+      string = null;
+    }
+  }
+  console.log(string);
+  return string;
+}
+
 const postPrediction = async (req, res) => {
   console.log("postPrediction");
 
   const token = await getToken({ req });
   const user = token.user;
 
-  const prediction = req.body;
+  const race_prediction = req.body;
 
-  console.log(JSON.stringify(prediction));
+  console.log(JSON.stringify(race_prediction));
+
+  const prediction = {
+    race_id: race_prediction.race_id,
+    pole_position: sanitize(race_prediction.pole_position),
+    sprint_race_pos_1: sanitize(race_prediction.sprint_race_pos_1),
+    sprint_race_pos_2: sanitize(race_prediction.sprint_race_pos_2),
+    sprint_race_pos_3: sanitize(race_prediction.sprint_race_pos_3),
+    sprint_race_fastest_lap: sanitize(race_prediction.sprint_race_fastest_lap),
+    race_pos_1: sanitize(race_prediction.race_pos_1),
+    race_pos_2: sanitize(race_prediction.race_pos_2),
+    race_pos_3: sanitize(race_prediction.race_pos_3),
+    race_fastest_lap: sanitize(race_prediction.race_fastest_lap),
+  }
 
   const { error } = await supabase.from("predictions").upsert(
     {
@@ -82,8 +106,11 @@ export default async function handler(req, res) {
   if (req.method == "POST") {
     const error = await postPrediction(req, res);
     if (error) {
+      console.log(error);
       res.status(400).json("error");
+      return;
     }
+    console.log("success");
     res.status(200).json("success");
     return;
   }
@@ -120,6 +147,7 @@ export default async function handler(req, res) {
 
   if (returnVal.error) {
     res.status(400).json("error");
+    return;
   }
 
   res.status(200).json(returnVal.predictions);
