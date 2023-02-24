@@ -32,12 +32,16 @@ const Calendar = () => {
   };
 
   const TableRow = ({ title, result, prediction }) => {
+    const match = result === prediction;
+
     return (
       <>
         <tr>
           <td className="pe-5 small fw-light">{title}</td>
           <td className="pe-5 small fw-light">{result}</td>
-          <td className="pe-5 small fw-light">{prediction}</td>
+          <td className={"pe-5 small fw-light " + (match ? "green" : "red")}>
+            {prediction}
+          </td>
         </tr>
       </>
     );
@@ -111,20 +115,17 @@ const Calendar = () => {
             <Card.Body className="py-0 px-0 mx-0 my-0">
               <Row>
                 <span className="fw-light small">
-                  Qualifying on{" "}
-                  {format(race.qualifying_start_time)}
+                  Qualifying on {format(race.qualifying_start_time)}
                 </span>
               </Row>
               <Row>
                 <span className="fw-light small">
-                  Sprint race on{" "}
-                  {format(race.sprint_race_start_time)}
+                  Sprint race on {format(race.sprint_race_start_time)}
                 </span>
               </Row>
               <Row>
                 <span className="fw-light small">
-                  Race on{" "}
-                  {format(race.race_start_time)}
+                  Race on {format(race.race_start_time)}
                 </span>
               </Row>
               {new Date(race.qualifying_start_time) < Date.now() ? (

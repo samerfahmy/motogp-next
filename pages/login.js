@@ -36,11 +36,14 @@ const LoginPage = () => {
   return (
     <>
       <Container>
-        <center>
-          <h2>Welcome to PredictorGP, the MotoGP predictor game!</h2>
+        <div className="text-center pt-4 mb-4">
+          <div className="mb-4">
+            <img src="app_icon.png" height={60} />
+          </div>
+          <h5>Welcome to PredictorGP, the MotoGP predictor game!</h5>
           <p>Please sign in!</p>
           {!!error && <Alert variant="danger">{error}</Alert>}
-        </center>
+        </div>
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email address</Form.Label>
@@ -59,22 +62,24 @@ const LoginPage = () => {
               disabled={loggingIn}
             />
           </Form.Group>
-          {!loggingIn ? (
-            <>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </>
-          ) : (
-            <Spinner animation="grow" variant="primary" />
-          )}
+          <div className="text-center my-5">
+            {!loggingIn ? (
+              <>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </>
+            ) : (
+              <Spinner animation="grow" variant="primary" />
+            )}
+          </div>
         </Form>
-        <center>
+        <div className="text-center medium-text">
           <p>
             Email <a href="mailto:samerf@gmail.com">samerf@gmail.com</a> to
             create an account.
           </p>
-        </center>
+        </div>
       </Container>
     </>
   );

@@ -55,7 +55,7 @@ const Scores = () => {
           Click on a cell in the table to see predictions and results
         </p>
 
-        <Table bordered size="sm" striped responsive>
+        <Table bordered size="sm" striped responsive className="mb-5">
           <thead>
             <tr>
               <th></th>

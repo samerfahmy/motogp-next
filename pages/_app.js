@@ -9,6 +9,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useRouter } from "next/router";
 import { SessionProvider, useSession, signOut } from "next-auth/react";
+import '../styles/globals.css'
 
 const AdminAuth = ({ children }) => {
   const { data: session, status } = useSession();

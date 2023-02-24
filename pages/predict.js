@@ -8,6 +8,7 @@ import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Toast from "react-bootstrap/Toast";
 import ToastContainer from "react-bootstrap/ToastContainer";
+import Modal from "react-bootstrap/Modal";
 import moment from "moment";
 
 const Predict = () => {
@@ -17,6 +18,7 @@ const Predict = () => {
   const [prediction, setPrediction] = useState({});
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
+  const [showPointsModal, setShowPointsModal] = useState(false);
 
   const { data: session } = useSession();
 
@@ -114,6 +116,43 @@ const Predict = () => {
     return moment(date).format("dddd, MMMM Do, h:mm a");
   };
 
+  const showPointsModall = () => {
+    alert(
+      "These are the points awared:\n\n+ 1 point for predicting the correct pole position\n+ 1 point for predicting a rider who is on the podium in Sprint\n+ 1 point for predicting a rider in their correct position in Sprint\n+ 2 point for predicting a rider who is on the podium in Race\n+ 2 point for predicting a rider in their correct position in Race\n+ 1 point for predicting the rider with the fastest lap\n"
+    );
+  };
+
+  const PointsModal = () => {
+    return (
+      <>
+        <Modal
+          size="md"
+          show={showPointsModal}
+          onHide={() => setShowPointsModal(false)}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Points System</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="small-text">
+            + 1 point for predicting the correct pole position
+            <br />
+            + 1 point for predicting a rider who is on the podium in Sprint
+            <br />
+            + 1 point for predicting a rider in their correct position in Sprint
+            <br />
+            + 2 point for predicting a rider who is on the podium in Race
+            <br />
+            + 2 point for predicting a rider in their correct position in Race
+            <br />
+            + 1 point for predicting the rider with the fastest lap
+            <br />
+          </Modal.Body>
+        </Modal>
+      </>
+    );
+  };
+
   const SuccessToast = () => {
     return (
       <ToastContainer position="bottom-center" className="py-5 text-center">
@@ -154,12 +193,7 @@ const Predict = () => {
 
   const RiderSelection = ({ id, selectedRider, disabled = false }) => {
     return (
-      <Form.Select
-        id={id}
-        defaultValue={selectedRider}
-        disabled={disabled}
-        className="fw-light"
-      >
+      <Form.Select id={id} defaultValue={selectedRider} disabled={disabled}>
         <option key="empty" value=""></option>
         {riders.map((rider, index) => {
           return (
@@ -173,17 +207,26 @@ const Predict = () => {
   };
 
   const TableRow = ({ title, id, selectedRider, disabled = false, result }) => {
+    const match = selectedRider === result;
+
     return (
       <tr>
-        <td className="pe-5">{title}</td>
-        <td className="pe-5">
+        <td className="prediction-table-row-title medium-text">{title}</td>
+        <td className="prediction-table-row-selection">
           <RiderSelection
             id={id}
             selectedRider={selectedRider}
             disabled={disabled}
           />
         </td>
-        <td>{result}</td>
+        <td
+          className={
+            "prediction-table-row-result medium-text " +
+            (match ? "green" : "red")
+          }
+        >
+          {result}
+        </td>
       </tr>
     );
   };
@@ -202,18 +245,18 @@ const Predict = () => {
           <Card>
             <Card.Body>
               <Card.Title>{currentRace.location}</Card.Title>
-              <Row className="small">
+              <Row className="small-text">
                 <span>
                   Predict Pole by {format(currentRace.qualifying_start_time)}
                 </span>
               </Row>
-              <Row className="small">
+              <Row className="small-text">
                 <span>
                   Predict Sprint Race by{" "}
                   {format(currentRace.sprint_race_start_time)}
                 </span>
               </Row>
-              <Row className="small">
+              <Row className="small-text">
                 <span>
                   Predict Race by {format(currentRace.race_start_time)}
                 </span>
@@ -228,64 +271,86 @@ const Predict = () => {
                     disabled={checkExpired(currentRace?.qualifying_start_time)}
                     result={currentRace?.pole_position}
                   />
-                  <TableRow
-                    title="Sprint first"
-                    id="sprint_race_pos_1"
-                    selectedRider={prediction?.sprint_race_pos_1}
-                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
-                    result={currentRace?.sprint_race_pos_1}
-                  />
-                  <TableRow
-                    title="Sprint second"
-                    id="sprint_race_pos_2"
-                    selectedRider={prediction?.sprint_race_pos_2}
-                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
-                    result={currentRace?.sprint_race_pos_2}
-                  />
-                  <TableRow
-                    title="Sprint third"
-                    id="sprint_race_pos_3"
-                    selectedRider={prediction?.sprint_race_pos_3}
-                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
-                    result={currentRace?.sprint_race_pos_3}
-                  />
-                  <TableRow
-                    title="Sprint fastest lap"
-                    id="sprint_race_fastest_lap"
-                    selectedRider={prediction?.sprint_race_fastest_lap}
-                    disabled={checkExpired(currentRace?.sprint_race_start_time)}
-                    result={currentRace?.sprint_race_fastest_lap}
-                  />
-                  <TableRow
-                    title="Race first"
-                    id="race_pos_1"
-                    selectedRider={prediction?.race_pos_1}
-                    disabled={checkExpired(currentRace?.race_start_time)}
-                    result={currentRace?.race_pos_1}
-                  />
-                  <TableRow
-                    title="Race second"
-                    id="race_pos_2"
-                    selectedRider={prediction?.race_pos_2}
-                    disabled={checkExpired(currentRace?.race_start_time)}
-                    result={currentRace?.race_pos_2}
-                  />
-                  <TableRow
-                    title="Race third"
-                    id="race_pos_3"
-                    selectedRider={prediction?.race_pos_3}
-                    disabled={checkExpired(currentRace?.race_start_time)}
-                    result={currentRace?.race_pos_3}
-                  />
-                  <TableRow
-                    title="Race fastest lap"
-                    id="race_fastest_lap"
-                    selectedRider={prediction?.race_fastest_lap}
-                    disabled={checkExpired(currentRace?.race_start_time)}
-                    result={currentRace?.race_fastest_lap}
-                  />
                 </tbody>
               </table>
+              <fieldset className="prediction-section">
+                <legend className="legend fw-light">Sprint Race</legend>
+                <table className="prediction-table">
+                  <tbody>
+                    <TableRow
+                      title="First"
+                      id="sprint_race_pos_1"
+                      selectedRider={prediction?.sprint_race_pos_1}
+                      disabled={checkExpired(
+                        currentRace?.sprint_race_start_time
+                      )}
+                      result={currentRace?.sprint_race_pos_1}
+                    />
+                    <TableRow
+                      title="Second"
+                      id="sprint_race_pos_2"
+                      selectedRider={prediction?.sprint_race_pos_2}
+                      disabled={checkExpired(
+                        currentRace?.sprint_race_start_time
+                      )}
+                      result={currentRace?.sprint_race_pos_2}
+                    />
+                    <TableRow
+                      title="Third"
+                      id="sprint_race_pos_3"
+                      selectedRider={prediction?.sprint_race_pos_3}
+                      disabled={checkExpired(
+                        currentRace?.sprint_race_start_time
+                      )}
+                      result={currentRace?.sprint_race_pos_3}
+                    />
+                    <TableRow
+                      title="Fastest lap"
+                      id="sprint_race_fastest_lap"
+                      selectedRider={prediction?.sprint_race_fastest_lap}
+                      disabled={checkExpired(
+                        currentRace?.sprint_race_start_time
+                      )}
+                      result={currentRace?.sprint_race_fastest_lap}
+                    />
+                  </tbody>
+                </table>
+              </fieldset>
+              <fieldset className="prediction-section">
+                <legend className="legend fw-light">Race</legend>
+                <table className="prediction-table">
+                  <tbody>
+                    <TableRow
+                      title="First"
+                      id="race_pos_1"
+                      selectedRider={prediction?.race_pos_1}
+                      disabled={checkExpired(currentRace?.race_start_time)}
+                      result={currentRace?.race_pos_1}
+                    />
+                    <TableRow
+                      title="Second"
+                      id="race_pos_2"
+                      selectedRider={prediction?.race_pos_2}
+                      disabled={checkExpired(currentRace?.race_start_time)}
+                      result={currentRace?.race_pos_2}
+                    />
+                    <TableRow
+                      title="Third"
+                      id="race_pos_3"
+                      selectedRider={prediction?.race_pos_3}
+                      disabled={checkExpired(currentRace?.race_start_time)}
+                      result={currentRace?.race_pos_3}
+                    />
+                    <TableRow
+                      title="Fastest lap"
+                      id="race_fastest_lap"
+                      selectedRider={prediction?.race_fastest_lap}
+                      disabled={checkExpired(currentRace?.race_start_time)}
+                      result={currentRace?.race_fastest_lap}
+                    />
+                  </tbody>
+                </table>
+              </fieldset>
               <span className="fw-light" style={{ "font-size": 12 }}>
                 <em>
                   *Note: You can predict as many times as you like until the cut
@@ -294,7 +359,7 @@ const Predict = () => {
               </span>
             </Card.Body>
           </Card>
-          <div className="mt-3 text-center">
+          <div className="mt-3 text-center mb-3">
             {!posting ? (
               <>
                 <Button variant="primary" type="submit">
@@ -309,6 +374,18 @@ const Predict = () => {
 
         <ErrorToast />
         <SuccessToast />
+
+        <div className="text-center small-text mb-5">
+          <span
+            className="info-link"
+            onClick={() => {
+              setShowPointsModal(true);
+            }}
+          >
+            point system info
+          </span>
+          <PointsModal />
+        </div>
       </Container>
     </>
   );

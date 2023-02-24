@@ -132,7 +132,7 @@ export default function Admin() {
   const TableRow = ({ title, id, selectedRider }) => {
     return (
       <tr>
-        <td>{title}</td>
+        <td className="fw-light medium-text pe-5">{title}</td>
         <td></td>
         <td>
           <RiderSelection id={id} selectedRider={selectedRider} />
