@@ -19,7 +19,6 @@ const Scores = () => {
     const fetchData = async () => {
       const scores = await (await fetch("/api/scores")).json();
       setScores(scores);
-      console.log(scores);
     };
     fetchData();
   }, []);
@@ -33,8 +32,6 @@ const Scores = () => {
   }
 
   const onCellClick = (user_id, race_id) => {
-    console.log("user_id:" + user_id);
-    console.log("race_id:" + race_id);
     setModalData({
       name: scores.user_data[user_id].name,
       prediction_data: scores.user_data[user_id].races[race_id],
@@ -51,7 +48,7 @@ const Scores = () => {
         <tr>
           <td className="pe-5 small fw-light">{title}</td>
           <td className="pe-5 small fw-light">{result}</td>
-          <td className={"pe-5 small fw-light " + (match ? "green" : "red")}>
+          <td className={"pe-5 small fw-light " + (match ? "green" : ( result ? "red" : ""))}>
             {prediction}
           </td>
         </tr>

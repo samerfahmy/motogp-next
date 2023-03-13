@@ -47,7 +47,6 @@ export default async function handler(req, res) {
     .eq("id", race_result.race_id);
 
   if (error) {
-    console.log(error);
     res.status(400).json("error storing results");
     return;
   }
