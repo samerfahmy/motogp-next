@@ -16,19 +16,6 @@ export default async function handler(req, res) {
     .select("*")
     .neq("test", true);
 
-  console.log(JSON.stringify(races));
-  console.log(JSON.stringify(predictions));
-  console.log(JSON.stringify(users));
-
-  // if (!error) {
-  //   res.status(200).json(riders);
-  //   return;
-  // }
-
-  // res.status(400).json({
-  //   error: error,
-  // });
-
   if (races_error || predictions_error || users_error) {
     res.status(400).json("error");
     return;
@@ -37,7 +24,6 @@ export default async function handler(req, res) {
   let response = {};
 
   const hash = (srcData) => {
-    console.log("srcData: " + srcData);
     var data = srcData.toString();
     var hash = 0,
       i,
@@ -116,7 +102,8 @@ export default async function handler(req, res) {
         prediction_data.sprint_race_pos_1 = prediction.sprint_race_pos_1;
         prediction_data.sprint_race_pos_2 = prediction.sprint_race_pos_2;
         prediction_data.sprint_race_pos_3 = prediction.sprint_race_pos_3;
-        prediction_data.sprint_race_fastest_lap = prediction.sprint_race_fastest_lap;
+        prediction_data.sprint_race_fastest_lap =
+          prediction.sprint_race_fastest_lap;
       }
 
       if (race_result.sprint_race_completed) {

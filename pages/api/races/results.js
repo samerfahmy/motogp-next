@@ -9,36 +9,48 @@ const sanitize = (string) => {
       string = null;
     }
   }
-  console.log(string);
+  if (string === undefined) {
+    string = null;
+  }
   return string;
-}
+};
 
 export default async function handler(req, res) {
-  const race_prediction = req.body;
-  console.log(race_prediction);
+  const race_result = req.body;
+  const token = await getToken({ req });
 
-  // const token = await getToken({ req });
-  // console.log(token);
-  // console.log(token.user.isAdmin);
-
-  const prediction = {
-    pole_position: sanitize(race_prediction.pole_position),
-    sprint_race_pos_1: sanitize(race_prediction.sprint_race_pos_1),
-    sprint_race_pos_2: sanitize(race_prediction.sprint_race_pos_2),
-    sprint_race_pos_3: sanitize(race_prediction.sprint_race_pos_3),
-    sprint_race_fastest_lap: sanitize(race_prediction.sprint_race_fastest_lap),
-    race_pos_1: sanitize(race_prediction.race_pos_1),
-    race_pos_2: sanitize(race_prediction.race_pos_2),
-    race_pos_3: sanitize(race_prediction.race_pos_3),
-    race_fastest_lap: sanitize(race_prediction.race_fastest_lap),
+  if (req.method != "POST") {
+    res.status(400).json("error posting results");
+    return;
   }
+
+  if (!token.user.isAdmin) {
+    res.status(400).json("unauthorized");
+    return;
+  }
+
+  const result = {
+    pole_position: sanitize(race_result.pole_position),
+    sprint_race_pos_1: sanitize(race_result.sprint_race_pos_1),
+    sprint_race_pos_2: sanitize(race_result.sprint_race_pos_2),
+    sprint_race_pos_3: sanitize(race_result.sprint_race_pos_3),
+    sprint_race_fastest_lap: sanitize(race_result.sprint_race_fastest_lap),
+    race_pos_1: sanitize(race_result.race_pos_1),
+    race_pos_2: sanitize(race_result.race_pos_2),
+    race_pos_3: sanitize(race_result.race_pos_3),
+    race_fastest_lap: sanitize(race_result.race_fastest_lap),
+  };
 
   const { error } = await supabase
     .from("races")
-    .update(prediction)
-    .eq("id", race_prediction.race_id);
+    .update(result)
+    .eq("id", race_result.race_id);
 
-  console.log(error);
+  if (error) {
+    console.log(error);
+    res.status(400).json("error storing results");
+    return;
+  }
 
   res.status(200).json("success");
 }

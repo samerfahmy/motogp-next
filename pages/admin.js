@@ -36,6 +36,7 @@ export default function Admin() {
     const target = event.target;
 
     let raceResult = {
+      id: id,
       race_id: id,
       pole_position: target.pole_position.value,
       sprint_race_pos_1: target.sprint_race_pos_1.value,

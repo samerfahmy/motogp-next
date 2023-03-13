@@ -9,31 +9,80 @@ const sanitize = (string) => {
       string = null;
     }
   }
-  console.log(string);
   return string;
-}
+};
+
+const checkForDuplicate = (prediction) => {
+  var selectionsArray = [];
+  selectionsArray[0] = this.checkForEmpty(prediction.race_pos_1);
+  selectionsArray[1] = this.checkForEmpty(prediction.race_pos_2);
+  selectionsArray[2] = this.checkForEmpty(prediction.race_pos_3);
+
+  for (var i = 0; i < selectionsArray.length; i++) {
+    for (var j = 0; j < selectionsArray.length; j++) {
+      if (
+        i != j &&
+        selectionsArray[i] === selectionsArray[j] &&
+        selectionsArray[i] != null
+      ) {
+        // duplicate selection, return an error
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+const checkExpired = (date, offset) => {
+  if (offset === undefined) {
+    offset = 0;
+  }
+
+  var srcDateModified = new Date(date);
+  srcDateModified.setSeconds(srcDateModified.getSeconds() + offset);
+
+  return srcDateModified <= Date.now();
+};
 
 const postPrediction = async (req, res) => {
-  console.log("postPrediction");
-
   const token = await getToken({ req });
   const user = token.user;
 
   const race_prediction = req.body;
 
-  console.log(JSON.stringify(race_prediction));
+  const { data: races, raceReadError } = await supabase
+    .from("races")
+    .select("*")
+    .eq("id", race_prediction.race_id);
+
+  if (raceReadError || races == null) return error;
+
+  // check if the race times have expired, if so then error
+  const race = races[0];
 
   const prediction = {
     race_id: race_prediction.race_id,
-    pole_position: sanitize(race_prediction.pole_position),
-    sprint_race_pos_1: sanitize(race_prediction.sprint_race_pos_1),
-    sprint_race_pos_2: sanitize(race_prediction.sprint_race_pos_2),
-    sprint_race_pos_3: sanitize(race_prediction.sprint_race_pos_3),
-    sprint_race_fastest_lap: sanitize(race_prediction.sprint_race_fastest_lap),
-    race_pos_1: sanitize(race_prediction.race_pos_1),
-    race_pos_2: sanitize(race_prediction.race_pos_2),
-    race_pos_3: sanitize(race_prediction.race_pos_3),
-    race_fastest_lap: sanitize(race_prediction.race_fastest_lap),
+  };
+
+  if (!checkExpired(race.qualifying_start_time)) {
+    prediction.pole_position = sanitize(race_prediction.pole_position);
+  }
+
+  if (!checkExpired(race.sprint_race_start_time)) {
+    prediction.sprint_race_pos_1 = sanitize(race_prediction.sprint_race_pos_1);
+    prediction.sprint_race_pos_2 = sanitize(race_prediction.sprint_race_pos_2);
+    prediction.sprint_race_pos_3 = sanitize(race_prediction.sprint_race_pos_3);
+    prediction.sprint_race_fastest_lap = sanitize(
+      race_prediction.sprint_race_fastest_lap
+    );
+  }
+
+  if (!checkExpired(race.race_start_time)) {
+    prediction.race_pos_1 = sanitize(race_prediction.race_pos_1);
+    prediction.race_pos_2 = sanitize(race_prediction.race_pos_2);
+    prediction.race_pos_3 = sanitize(race_prediction.race_pos_3);
+    prediction.race_fastest_lap = sanitize(race_prediction.race_fastest_lap);
   }
 
   const { error } = await supabase.from("predictions").upsert(
@@ -50,16 +99,12 @@ const postPrediction = async (req, res) => {
 };
 
 const getPredictionForUser = async (user, race) => {
-  console.log("getPredictionForUser(%s, %s)", user, race);
-
   const { data: predictions, error } = await supabase
     .from("predictions")
     .select("*")
     .eq("user_id", user)
     .eq("race_id", race)
     .order("race_id", { ascending: true });
-
-  console.log("getPredictionForUser" + JSON.stringify(predictions));
 
   return {
     predictions,
@@ -68,15 +113,11 @@ const getPredictionForUser = async (user, race) => {
 };
 
 const getAllPredictionsForUser = async (user) => {
-  console.log("getAllPredictionsForUser(%s)", user);
-
   const { data: predictions, error } = await supabase
     .from("predictions")
     .select("*")
     .eq("user_id", user)
     .order("race_id", { ascending: true });
-
-  console.log("getAllPredictionsForUser" + JSON.stringify(predictions));
 
   return {
     predictions,
@@ -85,14 +126,10 @@ const getAllPredictionsForUser = async (user) => {
 };
 
 const getAllPredictions = async () => {
-  console.log("getAllPredictions");
-
   const { data: predictions, error } = await supabase
     .from("predictions")
     .select("*")
     .order("race_id", { ascending: true });
-
-  console.log("getAllPredictions" + JSON.stringify(predictions));
 
   return {
     predictions,
@@ -101,16 +138,12 @@ const getAllPredictions = async () => {
 };
 
 export default async function handler(req, res) {
-  console.log("/predictions");
-
   if (req.method == "POST") {
     const error = await postPrediction(req, res);
     if (error) {
-      console.log(error);
       res.status(400).json("error");
       return;
     }
-    console.log("success");
     res.status(200).json("success");
     return;
   }
@@ -128,7 +161,7 @@ export default async function handler(req, res) {
       const token = await getToken({ req });
       userId = token.user.id;
     }
-    
+
     returnVal = await getPredictionForUser(userId, race);
   } else if (userDefined && !raceDefined) {
     let userId = user;
@@ -140,10 +173,6 @@ export default async function handler(req, res) {
   } else if (!userDefined && !raceDefined) {
     returnVal = await getAllPredictions();
   }
-
-  // console.log(JSON.stringify(query));
-  // console.log("user: " + user);
-  // console.log("race: " + race);
 
   if (returnVal.error) {
     res.status(400).json("error");
