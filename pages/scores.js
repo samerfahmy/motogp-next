@@ -19,13 +19,103 @@ const Scores = () => {
     const fetchData = async () => {
       const scores = await (await fetch("/api/scores")).json();
       setScores(scores);
+      console.log(scores);
     };
     fetchData();
   }, []);
 
+  const getRaceData = (race_id) => {
+    for (var i=0; i<scores.races.length; i++) {
+      if (race_id == scores.races[i].race_id) {
+        return scores.races[i];
+      }
+    }
+  }
+
   const onCellClick = (user_id, race_id) => {
-    setModalData(scores.user_data[user_id].races[race_id]);
+    console.log("user_id:" + user_id);
+    console.log("race_id:" + race_id);
+    setModalData({
+      name: scores.user_data[user_id].name,
+      prediction_data: scores.user_data[user_id].races[race_id],
+      race_data: getRaceData(race_id),
+    });
     setShowModal(true);
+  };
+
+  const TableRow = ({ title, result, prediction }) => {
+    const match = result === prediction;
+
+    return (
+      <>
+        <tr>
+          <td className="pe-5 small fw-light">{title}</td>
+          <td className="pe-5 small fw-light">{result}</td>
+          <td className={"pe-5 small fw-light " + (match ? "green" : "red")}>
+            {prediction}
+          </td>
+        </tr>
+      </>
+    );
+  };
+
+  const ResultsTable = ({ predictionData, raceData }) => {
+    return (
+      <table className="mt-2">
+        <tbody>
+          <tr>
+            <td className="pe-5"></td>
+            <td className="pe-5 small fw-bold">Result</td>
+            <td className="pe-5 small fw-bold">Prediction</td>
+          </tr>
+          <TableRow
+            title="Pole position"
+            result={raceData?.pole_position}
+            prediction={predictionData?.pole_position}
+          />
+          <TableRow
+            title="Sprint first"
+            result={raceData?.sprint_race_pos_1}
+            prediction={predictionData?.sprint_race_pos_1}
+          />
+          <TableRow
+            title="Sprint second"
+            result={raceData?.sprint_race_pos_2}
+            prediction={predictionData?.sprint_race_pos_2}
+          />
+          <TableRow
+            title="Sprint third"
+            result={raceData?.sprint_race_pos_3}
+            prediction={predictionData?.sprint_race_pos_3}
+          />
+          <TableRow
+            title="Sprint fastest lap"
+            result={raceData?.sprint_fastest_lap}
+            prediction={predictionData?.sprint_fastest_lap}
+          />
+          <TableRow
+            title="Race first"
+            result={raceData?.race_pos_1}
+            prediction={predictionData?.race_pos_1}
+          />
+          <TableRow
+            title="Race first"
+            result={raceData?.race_pos_2}
+            prediction={predictionData?.race_pos_2}
+          />
+          <TableRow
+            title="Race first"
+            result={raceData?.race_pos_3}
+            prediction={predictionData?.race_pos_3}
+          />
+          <TableRow
+            title="Race fastest lap"
+            result={raceData?.race_fastest_lap}
+            prediction={predictionData?.race_fastest_lap}
+          />
+        </tbody>
+      </table>
+    );
   };
 
   const ScoresModal = () => {
@@ -38,10 +128,11 @@ const Scores = () => {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Name - Location</Modal.Title>
+            <Modal.Title>{modalData.name} - {modalData.race_data ? modalData.race_data.location : ''}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Prediction data
+            <ResultsTable predictionData={modalData.prediction_data} raceData={modalData.race_data} />
+            
           </Modal.Body>
         </Modal>
       </>

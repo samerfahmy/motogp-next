@@ -39,10 +39,8 @@ export default async function handler(req, res) {
 
   var processed_race_results = {};
   var race_list = [];
-  var now = new Date();
   for (var i = 0; i < races.length; i++) {
     var race = races[i];
-
     var race_data = {
       race_id: race.id,
       location: race.location,
@@ -56,11 +54,11 @@ export default async function handler(req, res) {
       race_pos_3: race.race_pos_3,
       race_fastest_lap: race.race_fastest_lap,
       qualification_completed: race.pole_position != null,
-      qualification_started: race.qualifying_start_time < now,
+      qualification_started: new Date(race.qualifying_start_time) < Date.now(),
       sprint_race_completed: race.sprint_race_pos_1 != null,
-      sprint_race_started: race.sprint_race_start_time < now,
+      sprint_race_started: new Date(race.sprint_race_start_time) < Date.now(),
       race_completed: race.race_pos_1 != null,
-      race_started: race.race_start_time < now,
+      race_started: new Date(race.race_start_time) < Date.now(),
     };
 
     processed_race_results[race.id] = race_data;
