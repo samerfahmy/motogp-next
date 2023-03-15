@@ -87,8 +87,8 @@ const Scores = () => {
           />
           <TableRow
             title="Sprint fastest lap"
-            result={raceData?.sprint_fastest_lap}
-            prediction={predictionData?.sprint_fastest_lap}
+            result={raceData?.sprint_race_fastest_lap}
+            prediction={predictionData?.sprint_race_fastest_lap}
           />
           <TableRow
             title="Race first"

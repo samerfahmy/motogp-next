@@ -11,7 +11,8 @@ processes = []
 
 [env]
   PORT = "8080"
-  NEXTAUTH_URL = "https://motogp-next.fly.dev/"
+  NEXTAUTH_URL = "https://motogp.tafasa.com/"
+  NEXTAUTH_URL2 = "https://motogp-next.fly.dev/"
 
 [experimental]
   auto_rollback = true

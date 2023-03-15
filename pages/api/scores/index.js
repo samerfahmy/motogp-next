@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       sprint_race_pos_1: race.sprint_race_pos_1,
       sprint_race_pos_2: race.sprint_race_pos_2,
       sprint_race_pos_3: race.sprint_race_pos_3,
-      sprint_fastest_lap: race.sprint_race_fastest_lap,
+      sprint_race_fastest_lap: race.sprint_race_fastest_lap,
       race_pos_1: race.race_pos_1,
       race_pos_2: race.race_pos_2,
       race_pos_3: race.race_pos_3,
@@ -93,7 +93,10 @@ export default async function handler(req, res) {
 
       if (race_result.qualification_completed) {
         calculated_score +=
-          race_result.pole_position == prediction.pole_position ? 2 : 0;
+          race_result.pole_position == prediction.pole_position &&
+          race_result.pole_position !== null
+            ? 2
+            : 0;
       }
 
       if (race_result.sprint_race_started) {
@@ -109,6 +112,7 @@ export default async function handler(req, res) {
         winners[race_result.sprint_race_pos_1] = true;
         winners[race_result.sprint_race_pos_2] = true;
         winners[race_result.sprint_race_pos_3] = true;
+        winners[null] = false;
 
         if (winners[prediction.sprint_race_pos_1]) {
           calculated_score +=
@@ -133,7 +137,8 @@ export default async function handler(req, res) {
 
         if (
           prediction.sprint_race_fastest_lap ==
-          race_result.sprint_race_fastest_lap
+            race_result.sprint_race_fastest_lap &&
+          race_result.sprint_race_fastest_lap !== null
         ) {
           calculated_score += 1;
         }
@@ -151,6 +156,7 @@ export default async function handler(req, res) {
         winners[race_result.race_pos_1] = true;
         winners[race_result.race_pos_2] = true;
         winners[race_result.race_pos_3] = true;
+        winners[null] = false;
 
         if (winners[prediction.race_pos_1]) {
           calculated_score +=
@@ -167,7 +173,10 @@ export default async function handler(req, res) {
             prediction.race_pos_3 == race_result.race_pos_3 ? 4 : 2;
         }
 
-        if (prediction.race_fastest_lap == race_result.race_fastest_lap) {
+        if (
+          prediction.race_fastest_lap == race_result.race_fastest_lap &&
+          race_result.race_fastest_lap !== null
+        ) {
           calculated_score += 1;
         }
       }

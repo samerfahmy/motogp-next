@@ -78,8 +78,8 @@ const Calendar = () => {
           />
           <TableRow
             title="Sprint fastest lap"
-            result={race.sprint_fastest_lap}
-            prediction={race.prediction?.sprint_fastest_lap}
+            result={race.sprint_race_fastest_lap}
+            prediction={race.prediction?.sprint_race_fastest_lap}
           />
           <TableRow
             title="Race first"
