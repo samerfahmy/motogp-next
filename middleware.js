@@ -5,7 +5,10 @@ export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const protectedPaths = ["/", "/admin", "/scores", "/calendar", "/predict"];
   const isPathProtected = protectedPaths?.some((path) => pathname == path);
-  const isProtectedApi = pathname.startsWith('/api') && !pathname.startsWith('/api/auth');
+  const isProtectedApi =
+    pathname.startsWith("/api") &&
+    !pathname.startsWith("/api/auth") &&
+    !pathname.startsWith("/api/status");
   const res = NextResponse.next();
 
   if (isPathProtected || isProtectedApi) {
@@ -13,9 +16,9 @@ export async function middleware(req) {
     if (!token) {
       if (isProtectedApi) {
         return new NextResponse(
-          JSON.stringify({ success: false, message: 'authentication failed' }),
-          { status: 401, headers: { 'content-type': 'application/json' } }
-        )
+          JSON.stringify({ success: false, message: "authentication failed" }),
+          { status: 401, headers: { "content-type": "application/json" } }
+        );
       }
 
       const url = new URL(`/login`, req.url);
@@ -24,9 +27,9 @@ export async function middleware(req) {
     }
   }
 
-  if (pathname === '/') {
+  if (pathname === "/") {
     const url = new URL(`/predict`, req.url);
-    return NextResponse.redirect(url)   
+    return NextResponse.redirect(url);
   }
 
   return res;
