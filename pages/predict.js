@@ -363,7 +363,7 @@ const Predict = () => {
             {!posting ? (
               <>
                 <Button variant="primary" type="submit">
-                  Post Results
+                  Post Predictions
                 </Button>
               </>
             ) : (
