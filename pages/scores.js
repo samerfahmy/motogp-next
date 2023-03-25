@@ -24,12 +24,12 @@ const Scores = () => {
   }, []);
 
   const getRaceData = (race_id) => {
-    for (var i=0; i<scores.races.length; i++) {
+    for (var i = 0; i < scores.races.length; i++) {
       if (race_id == scores.races[i].race_id) {
         return scores.races[i];
       }
     }
-  }
+  };
 
   const onCellClick = (user_id, race_id) => {
     setModalData({
@@ -48,7 +48,11 @@ const Scores = () => {
         <tr>
           <td className="pe-5 small fw-light">{title}</td>
           <td className="pe-5 small fw-light">{result}</td>
-          <td className={"pe-5 small fw-light " + (match ? "green" : ( result ? "red" : ""))}>
+          <td
+            className={
+              "pe-5 small fw-light " + (match ? "green" : result ? "red" : "")
+            }
+          >
             {prediction}
           </td>
         </tr>
@@ -125,13 +129,140 @@ const Scores = () => {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{modalData.name} - {modalData.race_data ? modalData.race_data.location : ''}</Modal.Title>
+            <Modal.Title>
+              {modalData.name} -{" "}
+              {modalData.race_data ? modalData.race_data.location : ""}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ResultsTable predictionData={modalData.prediction_data} raceData={modalData.race_data} />
-            
+            <ResultsTable
+              predictionData={modalData.prediction_data}
+              raceData={modalData.race_data}
+            />
           </Modal.Body>
         </Modal>
+      </>
+    );
+  };
+
+  const ShowPredictions = ({ race, predictionData }) => {
+    if (predictionData == null || race == null) {
+      return <></>;
+    }
+
+    if (!race.qualification_started || race.race_completed) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {race.qualification_started ? (
+          <>
+            <p />
+            <span className="pe-5 small fw-light">
+              {predictionData.pole_position}
+            </span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+        {race.sprint_race_started ? (
+          <>
+            <span className="pe-5 small fw-light">
+              {predictionData.sprint_race_pos_1}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.sprint_race_pos_2}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.sprint_race_pos_3}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.sprint_race_fastest_lap}
+            </span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+        {race.race_started ? (
+          <>
+            <span className="pe-5 small fw-light">
+              {predictionData.race_pos_1}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.race_pos_2}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.race_pos_3}
+            </span>
+            <br />
+            <span className="pe-5 small fw-light">
+              {predictionData.race_fastest_lap}
+            </span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  };
+
+  const ShowHeadings = ({ race }) => {
+    if (race == null) {
+      return <></>;
+    }
+
+    if (!race.qualification_started || race.race_completed) {
+      return <></>;
+    }
+
+    return (
+      <>
+        {race.qualification_started ? (
+          <>
+            <p />
+            <span className="pe-5 small fw-light">Pole</span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+        {race.sprint_race_started ? (
+          <>
+            <span className="pe-5 small fw-light">Sprint 1</span>
+            <br />
+            <span className="pe-5 small fw-light">Sprint 2</span>
+            <br />
+            <span className="pe-5 small fw-light">Sprint 3</span>
+            <br />
+            <span className="pe-5 small fw-light">Sprint Fastest Lap</span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
+        {race.race_started ? (
+          <>
+            <span className="pe-5 small fw-light">Race 1</span>
+            <br />
+            <span className="pe-5 small fw-light">Race 2</span>
+            <br />
+            <span className="pe-5 small fw-light">Race 3</span>
+            <br />
+            <span className="pe-5 small fw-light">Race Fastest Lap</span>
+            <br />
+          </>
+        ) : (
+          <></>
+        )}
       </>
     );
   };
@@ -162,16 +293,26 @@ const Scores = () => {
             {scores.races.map((race, index) => {
               return (
                 <tr key={index}>
-                  <td>{race.location}</td>
+                  <td className="scores-table-cell">
+                    {race.location}
+                    <ShowHeadings race={race} />
+                  </td>
                   {scores.user_ids.map((user_id, index) => {
                     return (
                       <td
                         key={index}
                         onClick={() => onCellClick(user_id, race.race_id)}
+                        className="scores-table-cell"
                       >
                         {scores.user_data[user_id].races[race.race_id]
                           ? scores.user_data[user_id].races[race.race_id].score
                           : "0"}
+                        <ShowPredictions
+                          race={race}
+                          predictionData={
+                            scores.user_data[user_id].races[race.race_id]
+                          }
+                        />
                       </td>
                     );
                   })}
