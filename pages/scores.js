@@ -144,7 +144,7 @@ const Scores = () => {
               raceData={modalData.race_data}
             />
             <br></br>
-            {modalData.prediction_data.score} points
+            {modalData.prediction_data?.score} points
           </Modal.Body>
         </Modal>
       </>
