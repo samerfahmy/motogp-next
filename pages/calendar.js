@@ -36,7 +36,7 @@ const Calendar = () => {
 
     return (
       <>
-        <tr>
+        <tr className="table-border-bottom">
           <td className="pe-5 small fw-light">{title}</td>
           <td className="pe-5 small fw-light">{result}</td>
           <td className={"pe-5 small fw-light " + (match ? "green" : "red")}>
@@ -51,7 +51,7 @@ const Calendar = () => {
     return (
       <table className="mt-2">
         <tbody>
-          <tr>
+          <tr className="table-border-bottom">
             <td className="pe-5"></td>
             <td className="pe-5 small fw-bold">Result</td>
             <td className="pe-5 small fw-bold">Prediction</td>

@@ -32,6 +32,10 @@ const Scores = () => {
   };
 
   const onCellClick = (user_id, race_id) => {
+    if (!getRaceData(race_id).qualification_started) {
+      return;
+    }
+
     setModalData({
       name: scores.user_data[user_id].name,
       prediction_data: scores.user_data[user_id].races[race_id],
@@ -45,7 +49,7 @@ const Scores = () => {
 
     return (
       <>
-        <tr>
+        <tr className="table-border-bottom">
           <td className="pe-5 small fw-light">{title}</td>
           <td className="pe-5 small fw-light">{result}</td>
           <td
@@ -64,7 +68,7 @@ const Scores = () => {
     return (
       <table className="mt-2">
         <tbody>
-          <tr>
+          <tr className="table-border-bottom">
             <td className="pe-5"></td>
             <td className="pe-5 small fw-bold">Result</td>
             <td className="pe-5 small fw-bold">Prediction</td>
@@ -139,6 +143,8 @@ const Scores = () => {
               predictionData={modalData.prediction_data}
               raceData={modalData.race_data}
             />
+            <br></br>
+            {modalData.prediction_data.score} points
           </Modal.Body>
         </Modal>
       </>
@@ -302,7 +308,7 @@ const Scores = () => {
                       <td
                         key={index}
                         onClick={() => onCellClick(user_id, race.race_id)}
-                        className="scores-table-cell"
+                        className="scores-table-cell clickable"
                       >
                         {scores.user_data[user_id].races[race.race_id]
                           ? scores.user_data[user_id].races[race.race_id].score
