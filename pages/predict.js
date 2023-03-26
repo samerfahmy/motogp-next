@@ -116,12 +116,6 @@ const Predict = () => {
     return moment(date).format("dddd, MMMM Do, h:mm a");
   };
 
-  const showPointsModall = () => {
-    alert(
-      "These are the points awared:\n\n+ 1 point for predicting the correct pole position\n+ 1 point for predicting a rider who is on the podium in Sprint\n+ 1 point for predicting a rider in their correct position in Sprint\n+ 2 point for predicting a rider who is on the podium in Race\n+ 2 point for predicting a rider in their correct position in Race\n+ 1 point for predicting the rider with the fastest lap\n"
-    );
-  };
-
   const PointsModal = () => {
     return (
       <>
@@ -362,7 +356,13 @@ const Predict = () => {
           <div className="mt-3 text-center mb-3">
             {!posting ? (
               <>
-                <Button variant="primary" type="submit">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={
+                    posting || checkExpired(currentRace?.race_start_time)
+                  }
+                >
                   Post Predictions
                 </Button>
               </>
