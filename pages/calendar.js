@@ -87,12 +87,12 @@ const Calendar = () => {
             prediction={race.prediction?.race_pos_1}
           />
           <TableRow
-            title="Race first"
+            title="Race second"
             result={race.race_pos_2}
             prediction={race.prediction?.race_pos_2}
           />
           <TableRow
-            title="Race first"
+            title="Race third"
             result={race.race_pos_3}
             prediction={race.prediction?.race_pos_3}
           />

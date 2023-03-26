@@ -104,12 +104,12 @@ const Scores = () => {
             prediction={predictionData?.race_pos_1}
           />
           <TableRow
-            title="Race first"
+            title="Race second"
             result={raceData?.race_pos_2}
             prediction={predictionData?.race_pos_2}
           />
           <TableRow
-            title="Race first"
+            title="Race third"
             result={raceData?.race_pos_3}
             prediction={predictionData?.race_pos_3}
           />
