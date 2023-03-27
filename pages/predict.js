@@ -37,7 +37,7 @@ const Predict = () => {
     let currentRace = null;
     for (var i = 0; i < raceList.length; i++) {
       const race = raceList[i];
-      if ((!checkExpired(race.race_start_time), 84600)) {
+      if (!checkExpired(race.race_start_time, 84600)) {
         currentRace = race;
         break;
       }
