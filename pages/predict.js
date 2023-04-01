@@ -70,13 +70,14 @@ const Predict = () => {
     fetchData();
   }, []);
 
-  const postPrediction = async (event, id) => {
+  const postPrediction = async (event) => {
     setPosting(true);
     setShowSuccessToast(false);
     setShowErrorToast(false);
     event.preventDefault();
 
     const target = event.target;
+    const id = currentRace.id;
 
     let postedPrediction = {
       race_id: id,
@@ -235,7 +236,7 @@ const Predict = () => {
           </p>
         </Row>
 
-        <Form onSubmit={(event) => postPrediction(event, 1)}>
+        <Form onSubmit={(event) => postPrediction(event)}>
           <Card>
             <Card.Body>
               <Card.Title>{currentRace.location}</Card.Title>
