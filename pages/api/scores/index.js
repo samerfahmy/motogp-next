@@ -94,7 +94,7 @@ export default async function handler(req, res) {
         prediction_data.pole_position = prediction.pole_position;
       }
 
-      if (race_result.qualification_completed && !race.skip_pole) {
+      if (race_result.qualification_completed && !race_result.skip_pole) {
         calculated_score +=
           race_result.pole_position == prediction.pole_position &&
           race_result.pole_position !== null
