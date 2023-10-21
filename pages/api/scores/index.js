@@ -59,6 +59,8 @@ export default async function handler(req, res) {
       sprint_race_started: new Date(race.sprint_race_start_time) < Date.now(),
       race_completed: race.race_pos_1 != null,
       race_started: new Date(race.race_start_time) < Date.now(),
+      skip_race: race.skip_race,
+      skip_sprint: race.skip_sprint,
     };
 
     processed_race_results[race.id] = race_data;
@@ -107,7 +109,7 @@ export default async function handler(req, res) {
           prediction.sprint_race_fastest_lap;
       }
 
-      if (race_result.sprint_race_completed) {
+      if (race_result.sprint_race_completed && !race_result.skip_sprint) {
         var winners = {};
         winners[race_result.sprint_race_pos_1] = true;
         winners[race_result.sprint_race_pos_2] = true;
@@ -151,7 +153,7 @@ export default async function handler(req, res) {
         prediction_data.race_fastest_lap = prediction.race_fastest_lap;
       }
 
-      if (race_result.race_completed) {
+      if (race_result.race_completed && !race_result.skip_race) {
         var winners = {};
         winners[race_result.race_pos_1] = true;
         winners[race_result.race_pos_2] = true;
