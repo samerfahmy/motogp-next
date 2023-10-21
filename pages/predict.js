@@ -361,7 +361,7 @@ const Predict = () => {
                   variant="primary"
                   type="submit"
                   disabled={
-                    posting || checkExpired(currentRace?.race_start_time)
+                    posting || checkExpired(Math.max(new Date(currentRace?.race_start_time), new Date(currentRace?.sprint_race_start_time)))
                   }
                 >
                   Post Predictions
