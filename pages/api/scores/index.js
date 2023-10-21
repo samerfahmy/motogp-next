@@ -61,6 +61,7 @@ export default async function handler(req, res) {
       race_started: new Date(race.race_start_time) < Date.now(),
       skip_race: race.skip_race,
       skip_sprint: race.skip_sprint,
+      skip_pole: race.skip_pole,
     };
 
     processed_race_results[race.id] = race_data;
@@ -93,7 +94,7 @@ export default async function handler(req, res) {
         prediction_data.pole_position = prediction.pole_position;
       }
 
-      if (race_result.qualification_completed) {
+      if (race_result.qualification_completed && !race.skip_pole) {
         calculated_score +=
           race_result.pole_position == prediction.pole_position &&
           race_result.pole_position !== null
